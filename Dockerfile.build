@@ -1,0 +1,19 @@
+# Create docker image from python3.7-slim
+FROM ledfx-venv
+COPY --from=ledfx-compile /ledfx/venv /ledfx/venv
+# ENV PATH="/ledfx/venv/bin:$PATH"
+
+# Remove uneeded packages
+RUN rm -rf /var/lib/apt/lists/*
+
+# Add user `ledfx` and create home folder
+RUN useradd --create-home ledfx
+# Set the working directory in the container
+WORKDIR /home/ledfx
+USER ledfx
+
+# Expose port 8888 for web server and 5353 for mDNS discovery
+EXPOSE 8888/tcp
+EXPOSE 5353/udp
+ENTRYPOINT [ "ledfx"]
+#CMD ["--host 0.0.0.0","--port 8888"]

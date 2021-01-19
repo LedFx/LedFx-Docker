@@ -1,0 +1,117 @@
+name: Docker-stages
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/docker-stages*'
+      - '!Dockerfile'
+      - '!ledfx*/**'
+  workflow_dispatch:
+
+jobs:
+  ledfx-2stage:
+    env:
+      IMAGE_NAME: ledfx-2stage
+    name: Build LedFx-2stage on ubuntu-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ${{ env.IMAGE_NAME }}
+        run: |
+          docker build --file Dockerfile-2stage-1 --tag ledfx-2stage .
+
+  ledfx-4stage:
+    env:
+      IMAGE_NAME: ledfx-4stage
+    name: Build LedFx-4stage on ubuntu-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ${{ env.IMAGE_NAME }}
+        run: |
+          docker build --file Dockerfile-4stage --tag ledfx-4stage .
+
+
+  ledfx-multistage:
+    env:
+      IMAGE_NAME: ledfx-multistage
+    name: Build LedFx-venv on ubuntu-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ${{ env.IMAGE_NAME }}
+        run: |
+          docker build --file Dockerfile.venv --tag ledfx-venv .
+          docker build --file Dockerfile.compile --tag ledfx-compile .
+          docker build --file Dockerfile.build --tag ledfx-build .
+
+#   ledfx-venv:
+#     env:
+#       IMAGE_NAME: ledfx-venv
+#     name: Build LedFx-venv on ubuntu-latest
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Build ${{ env.IMAGE_NAME }}
+#         run: |
+#           docker build --file Dockerfile.venv --tag ledfx-venv .
+#           ls -lahF
+#       - name: Upload ledfx-venv to /
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ledfx-venv
+#           path: .
+
+#   ledfx-compile:
+#     needs: ledfx-venv
+#     env:
+#       IMAGE_NAME: ledfx-compile
+#     name: Build LedFx-compile on ubuntu-latest
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Download ledfx-venv
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: ledfx-venv
+#       - uses: actions/checkout@v2
+#       - name: Build ${{ env.IMAGE_NAME }}
+#         run: |
+#           docker build --file Dockerfile.compile --tag ledfx-compile .
+#       - name: Upload ledfx-venv to /
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ledfx-venv
+#           path: .
+#       - name: Upload ledfx-compile to /
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ledfx-compile
+#           path: .
+
+#   ledfx-build:
+#     needs: [ledfx-venv, ledfx-compile]
+#     env:
+#       IMAGE_NAME: ledfx-build
+#     name: Build LedFx-build on ubuntu-latest
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Download ledfx-venv
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: ledfx-venv
+#       - name: Download ledfx-compile
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: ledfx-compile
+#       - uses: actions/checkout@v2
+#       - name: Build ${{ env.IMAGE_NAME }}
+#         run: |
+#           docker build --file Dockerfile.build --tag ledfx-build .

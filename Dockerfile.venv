@@ -1,0 +1,16 @@
+### Create docker image from python3.7-slim
+#
+# Set up base venv image to start the build
+FROM python:3.7-slim AS venv-image
+# Create python venv and add it to PATH
+RUN python -m venv /ledfx/venv
+ENV PATH="/ledfx/venv/bin:$PATH"
+# Install dependencies and ledfx, remove uneeded packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        alsa-utils \
+      #   libasound2 \
+      #   libasound2-plugins \
+        portaudio19-dev \
+        pulseaudio \
+    && apt-get clean -y \
+    && apt-get autoremove -y

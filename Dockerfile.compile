@@ -1,0 +1,9 @@
+### Create docker image from venv-image as compile-image to speed up builds
+#
+FROM ledfx-venv AS compile-image
+ENV PATH="/ledfx/venv/bin:$PATH"
+WORKDIR /ledfx
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gcc \
+        libc-dev
+RUN pip install ledfx-dev

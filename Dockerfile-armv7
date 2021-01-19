@@ -1,0 +1,51 @@
+# Create docker image from arm32v7/python:3.9-slim
+# This image serves as the base venv image
+
+############### VENV IMAGE ###############
+FROM arm32v7/python:3.9-slim AS venv-image
+# Create python venv and add it to PATH
+RUN python -m venv /ledfx/venv
+ENV PATH="/ledfx/venv/bin:$PATH"
+RUN python -m pip install --upgrade pip wheel setuptools
+# Install dependencies and ledfx, remove uneeded packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        alsa-utils \
+        libatlas3-base \
+        portaudio19-dev \
+        pulseaudio \
+    && apt-get clean -y \
+    && apt-get autoremove -y
+
+############### COMPILE IMAGE ###############
+FROM venv-image AS compile-image
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gcc \
+        git \
+        libc-dev \
+        nodejs \
+        npm \
+        python3-dev
+
+########## BUILD IMAGE ##########
+FROM compile-image AS build-image
+ENV PATH="/ledfx/venv/bin:$PATH"
+RUN pip install git+https://github.com/LedFx/LedFx@dev
+
+
+# Create arm32v7/python:3.9-slim - Dist Image
+# This image copies /ledfx/venv from build-image for a smaller final image
+
+############### DIST IMAGE ###############
+FROM venv-image AS dist-image
+
+COPY --from=build-image /ledfx/venv /ledfx/venv
+ENV PATH="/ledfx/venv/bin:$PATH"
+RUN rm -rf /var/lib/apt/lists/* \
+        useradd --create-home ledfx --groups audio
+# Set the working directory in the container
+WORKDIR /home/ledfx
+USER ledfx
+# Expose port 8888 for web server
+EXPOSE 8888/tcp
+EXPOSE 5353/udp
+ENTRYPOINT [ "ledfx"]
