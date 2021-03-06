@@ -4,20 +4,26 @@
 ############### VENV IMAGE ###############
 FROM arm32v7/python:3.9-slim AS venv-image
 # Create python venv and add it to PATH
+ARG VERSION="master"
 RUN python -m venv /ledfx/venv
 ENV PATH="/ledfx/venv/bin:$PATH"
-RUN python -m pip install --upgrade pip wheel setuptools
+RUN python -m pip install --upgrade pip wheel setuptools \
+    && python -m pip install Cython
 # Install dependencies and ledfx, remove uneeded packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
         alsa-utils \
+        avahi-daemon \
         libatlas3-base \
+        llvm-9 \
         portaudio19-dev \
         pulseaudio \
     && apt-get clean -y \
-    && apt-get autoremove -y
+    && apt-get autoremove -y \
+    && ln -s /usr/bin/llvm-config-9 /usr/bin/llvm-config
 
 ############### COMPILE IMAGE ###############
 FROM venv-image AS compile-image
+ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc \
         git \
@@ -28,8 +34,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ########## BUILD IMAGE ##########
 FROM compile-image AS build-image
+ARG VERSION
 ENV PATH="/ledfx/venv/bin:$PATH"
-RUN pip install git+https://github.com/LedFx/LedFx@dev
+RUN pip install git+https://github.com/LedFx/LedFx@"${VERSION}"
 
 
 # Create arm32v7/python:3.9-slim - Dist Image
@@ -40,11 +47,11 @@ FROM venv-image AS dist-image
 
 COPY --from=build-image /ledfx/venv /ledfx/venv
 ENV PATH="/ledfx/venv/bin:$PATH"
-RUN rm -rf /var/lib/apt/lists/* \
-        useradd --create-home ledfx --groups audio
+RUN rm -rf /var/lib/apt/lists/*
+        # useradd --create-home ledfx --groups audio
 # Set the working directory in the container
-WORKDIR /home/ledfx
-USER ledfx
+# WORKDIR /home/ledfx
+# USER ledfx
 # Expose port 8888 for web server
 EXPOSE 8888/tcp
 EXPOSE 5353/udp
