@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir ledfx-dev
 
 # Add user `ledfx` and create home folder
-RUN useradd --create-home ledfx
+RUN useradd -l --create-home ledfx
 # Set the working directory in the container
 WORKDIR /home/ledfx
 USER ledfx

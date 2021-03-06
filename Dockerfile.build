@@ -7,7 +7,7 @@ COPY --from=ledfx-compile /ledfx/venv /ledfx/venv
 RUN rm -rf /var/lib/apt/lists/*
 
 # Add user `ledfx` and create home folder
-RUN useradd --create-home ledfx
+RUN useradd -l --create-home ledfx
 # Set the working directory in the container
 WORKDIR /home/ledfx
 USER ledfx

@@ -48,7 +48,7 @@ FROM venv-image AS dist-image
 COPY --from=build-image /ledfx/venv /ledfx/venv
 ENV PATH="/ledfx/venv/bin:$PATH"
 RUN rm -rf /var/lib/apt/lists/*
- # useradd --create-home ledfx --groups audio
+ # useradd -l --create-home ledfx --groups audio
 # Set the working directory in the container
 # WORKDIR /home/ledfx
 # USER ledfx

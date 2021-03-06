@@ -42,7 +42,7 @@ COPY --from=build-image /ledfx/venv /ledfx/venv
 ENV PATH="/ledfx/venv/bin:$PATH"
 
 RUN rm -rf /var/lib/apt/lists/*
-RUN useradd --create-home ledfx --groups audio
+RUN useradd -l --create-home ledfx --groups audio
 WORKDIR /home/ledfx
 USER ledfx
 
