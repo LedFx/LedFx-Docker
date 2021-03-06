@@ -14,12 +14,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         alsa-utils \
         avahi-daemon \
         libatlas3-base \
-        llvm-9 \
+        # llvm-9 \
         portaudio19-dev \
         pulseaudio \
     && apt-get clean -y \
-    && apt-get autoremove -y \
-    && ln -s /usr/bin/llvm-config-9 /usr/bin/llvm-config
+    && apt-get autoremove -y
+#     && ln -s /usr/bin/llvm-config-9 /usr/bin/llvm-config
 
 ############### COMPILE IMAGE ###############
 FROM venv-image AS compile-image
@@ -28,8 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc \
         git \
         libc-dev \
-        nodejs \
-        npm \
+        # nodejs \
+        # npm \
         python3-dev
 
 ########## BUILD IMAGE ##########

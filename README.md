@@ -1,6 +1,6 @@
 # ledfx-docker
 
-An attempt at running LedFX inside a docker container
+This repository is very much a work in progress. Feel free to try some of these out and/or contribute to this repo. I am far from an expert at building Docker images so if you know more than me I'd love to be schooled.
 
 ## How these files work
 
