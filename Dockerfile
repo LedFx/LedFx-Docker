@@ -3,7 +3,7 @@ FROM python:3.9-slim
 
 # Create python venv and add it to PATH
 RUN python -m venv /ledfx/venv \
-        && python -m pip install -U pip wheel setuptools
+        && python -m pip install --no-cache-dir -U pip wheel setuptools
 ENV PATH="/ledfx/venv/bin:$PATH"
 
 # Install dependencies and ledfx, remove uneeded packages
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         portaudio19-dev \
         # pulseaudio \
         python3-dev && apt-get purge -y gcc python3-dev && apt-get clean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
-RUN pip install ledfx-dev
+RUN pip install --no-cache-dir ledfx-dev
 
 # Add user `ledfx` and create home folder
 RUN useradd --create-home ledfx

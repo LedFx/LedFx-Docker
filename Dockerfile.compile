@@ -6,4 +6,4 @@ WORKDIR /ledfx
 RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc \
         libc-dev && apt-get clean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
-RUN pip install ledfx-dev
+RUN pip install --no-cache-dir ledfx-dev

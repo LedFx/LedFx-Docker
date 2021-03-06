@@ -5,7 +5,7 @@ FROM python:3.9-slim AS venv-image
 # Create python venv and add it to PATH
 RUN python -m venv /ledfx/venv
 ENV PATH="/ledfx/venv/bin:$PATH"
-RUN python -m pip install --upgrade pip wheel setuptools
+RUN python -m pip install --no-cache-dir --upgrade pip wheel setuptools
 # Install dependencies and ledfx, remove unneeded packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
         alsa-utils \
@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM compile-image AS build-image
 COPY --from=venv-image /ledfx/venv /ledfx/venv
 ENV PATH="/ledfx/venv/bin:$PATH"
-RUN pip install git+https://github.com/LedFx/LedFx@dev
+RUN pip install --no-cache-dir git+https://github.com/LedFx/LedFx@dev
 
 # Create docker image from venv-image to build dist-image
 #

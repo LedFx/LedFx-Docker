@@ -7,8 +7,8 @@ FROM arm32v7/python:3.9-slim AS venv-image
 ARG VERSION="master"
 RUN python -m venv /ledfx/venv
 ENV PATH="/ledfx/venv/bin:$PATH"
-RUN python -m pip install --upgrade pip wheel setuptools \
-    && python -m pip install Cython
+RUN python -m pip install --no-cache-dir --upgrade pip wheel setuptools \
+    && python -m pip install --no-cache-dir Cython
 # Install dependencies and ledfx, remove unneeded packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
         alsa-utils \
@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM compile-image AS build-image
 ARG VERSION
 ENV PATH="/ledfx/venv/bin:$PATH"
-RUN pip install git+https://github.com/LedFx/LedFx@"${VERSION}"
+RUN pip install --no-cache-dir git+https://github.com/LedFx/LedFx@"${VERSION}"
 
 
 # Create arm32v7/python:3.9-slim - Dist Image
