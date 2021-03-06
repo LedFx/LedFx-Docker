@@ -11,10 +11,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         alsa-utils \
         libatlas3-base \
         portaudio19-dev \
-        pulseaudio 
+        pulseaudio && rm -rf /var/lib/apt/lists/*
 RUN apt-get clean -y 
 RUN apt-get autoremove -y
-RUN rm -rf /var/lib/apt/lists/*
+
 
 ### Create docker image from venv-image as compile-image to speed up builds
 #
@@ -25,8 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libc-dev \
         nodejs \
         npm \
-        python3-dev
-RUN rm -rf /var/lib/apt/lists/*
+        python3-dev && rm -rf /var/lib/apt/lists/*
 
 ### Create docker image from compile-image to pull and build from github
 #

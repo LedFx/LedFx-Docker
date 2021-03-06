@@ -16,9 +16,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libatlas3-base \
         # llvm-9 \
         portaudio19-dev \
-        pulseaudio \
-    && apt-get clean -y \
-    && apt-get autoremove -y
+        pulseaudio && rm -rf /var/lib/apt/lists/*
+RUN apt-get clean -y \
+RUN apt-get autoremove -y
 #   && ln -s /usr/bin/llvm-config-9 /usr/bin/llvm-config
 
 ############### COMPILE IMAGE ###############
@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libc-dev \
         # nodejs \
         # npm \
-        python3-dev
+        python3-dev && rm -rf /var/lib/apt/lists/*
 
 ########## BUILD IMAGE ##########
 FROM compile-image AS build-image

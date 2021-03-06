@@ -11,7 +11,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       #   libasound2 \
       #   libasound2-plugins \
         portaudio19-dev \
-        pulseaudio 
-RUN apt-get clean -y 
-RUN apt-get autoremove -y
-RUN rm -rf /var/lib/apt/lists/*
+        pulseaudio && apt-get clean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*

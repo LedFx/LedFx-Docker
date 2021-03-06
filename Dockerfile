@@ -8,19 +8,14 @@ ENV PATH="/ledfx/venv/bin:$PATH"
 
 # Install dependencies and ledfx, remove uneeded packages
 #
-RUN apt-get update 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc \
         # alsa-utils \
         libatlas3-base \
         portaudio19-dev \
         # pulseaudio \
-        python3-dev 
+        python3-dev && apt-get purge -y gcc python3-dev && apt-get clean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 RUN pip install ledfx-dev
-RUN apt-get purge -y gcc python3-dev 
-RUN apt-get clean -y 
-RUN apt-get autoremove -y 
-RUN rm -rf /var/lib/apt/lists/*
 
 # Add user `ledfx` and create home folder
 RUN useradd --create-home ledfx
